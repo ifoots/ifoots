@@ -1992,7 +1992,7 @@ class Shell {
 		}
 
 		if (!this.disableWord && store.state.config.wordShell) {
-			if (Math.random() < 0.3) {  // 提高概率到30%
+			if (Math.random() < 0.1) {  // 提高概率到10%
 				const wordToDisplay = Math.random() < 0.5 ? randomWord() : userName;  // 50%新年词，50%用户名字
 				createWordBurst(wordToDisplay, dotStarFactory, x, y);
 			}
