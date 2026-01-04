@@ -2013,7 +2013,7 @@ class Shell {
 		} else {
 			throw new Error("无效的烟花颜色。应为字符串或字符串数组，但得到:" + this.color);
 		}
-
+		/*
 		if (this.word && !this.disableWord && store.state.config.wordShell) {
 			if (Math.random() < 0.1) {
 				if (Math.random() < 0.5) {
@@ -2022,6 +2022,7 @@ class Shell {
 				}
 			}
 		}
+		*/
 
 		if (this.pistil) {
 			const innerShell = new Shell({
