@@ -4,28 +4,25 @@ Github：https://github.com/NianBroken/Firework_Simulator
 Gitee：https://gitee.com/nianbroken/Firework_Simulator
 */
 "use strict";
-
-// ===== Telegram Mini App 用户信息 =====
-let TG_USER_NAME = "朋友";
-
-if (window.Telegram && Telegram.WebApp) {
-  Telegram.WebApp.ready();
-
-  const user = Telegram.WebApp.initDataUnsafe?.user;
-  if (user) {
-    TG_USER_NAME =
-      user.first_name ||
-      user.username ||
-      "朋友";
-  }
-}
-
-
 console.clear();
 
 //这是一个从简单项目开始的典型例子
 //并且雪球远远超出了它的预期大小。有点笨重
 //读取/处理这个单独的文件，但不管怎样，它还是在这里:)
+
+// 检测是否在Telegram Mini App中
+const isTelegramMiniApp = !!window.Telegram && !!window.Telegram.WebApp;
+
+// 获取用户名字（如果在Telegram中）
+let userName = 'Guest'; // 默认值
+if (isTelegramMiniApp) {
+  window.Telegram.WebApp.ready(); // 初始化Telegram Web App
+  const user = window.Telegram.WebApp.initDataUnsafe.user;
+  if (user) {
+    userName = user.first_name || user.username || 'User';
+    if (user.last_name) userName += ' ' + user.last_name;
+  }
+}
 
 const IS_MOBILE = window.innerWidth <= 640;
 const IS_DESKTOP = window.innerWidth > 800;
@@ -893,47 +890,28 @@ function getRandomShellPositionV() {
 }
 
 // 获取随机的烟花尺寸
+function getRandomShellSize() {
+	const baseSize = shellSizeSelector();
+	const maxVariance = Math.min(2.5, baseSize);
+	const variance = Math.random() * maxVariance;
+	const size = baseSize - variance;
+	const height = maxVariance === 0 ? Math.random() : 1 - variance / maxVariance;
+	const centerOffset = Math.random() * (1 - height * 0.65) * 0.5;
+	const x = Math.random() < 0.5 ? 0.5 - centerOffset : 0.5 + centerOffset;
+	return {
+		size,
+		x: fitShellPositionInBoundsH(x),
+		height: fitShellPositionInBoundsV(height),
+	};
+}
+
+// Launches a shell from a user pointer event, based on state.config
 function launchShellFromConfig(event) {
-  let shellConfig;
+	const shell = new Shell(shellFromConfig(shellSizeSelector()));
+	const w = mainStage.width;
+	const h = mainStage.height;
 
-  // 如果开启了文字烟花
-  if (store.state.config.wordShell) {
-    // 动态生成文字：使用 Telegram 用户名字
-    const text = `新年快乐\n${TG_USER_NAME}`;
-
-    // 缓存文字点阵（只要有新文字就缓存）
-    if (!wordDotsMap[text]) {
-      wordDotsMap[text] = MyMath.literalLattice(
-        text,
-        3,
-        "Gabriola, 华文琥珀",
-        "90px"
-      );
-    }
-
-    // 文字烟花配置
-    shellConfig = {
-      shellSize: shellSizeSelector(),
-      spreadSize: 360,
-      starLife: 1800,
-      starDensity: 1.1,
-      color: randomColor(),
-      word: text,   // ✅ 这里直接用上动态名字
-    };
-  } else {
-    // 普通烟花
-    shellConfig = shellFromConfig(shellSizeSelector());
-  }
-
-  // 创建并发射烟花
-  const shell = new Shell(shellConfig);
-  const w = mainStage.width;
-  const h = mainStage.height;
-
-  shell.launch(
-    event ? event.x / w : getRandomShellPositionH(),
-    event ? 1 - event.y / h : getRandomShellPositionV()
-  );
+	shell.launch(event ? event.x / w : getRandomShellPositionH(), event ? 1 - event.y / h : getRandomShellPositionV());
 }
 
 // Sequences
@@ -1706,7 +1684,6 @@ function crackleEffect(star) {
 class Shell {
 	constructor(options) {
 		Object.assign(this, options);
-		this.word = options.word || null;
 		this.starLifeVariation = options.starLifeVariation || 0.125;
 		this.color = options.color || randomColor();
 		this.glitterColor = options.glitterColor || this.color;
@@ -2013,16 +1990,13 @@ class Shell {
 		} else {
 			throw new Error("无效的烟花颜色。应为字符串或字符串数组，但得到:" + this.color);
 		}
-		/*
-		if (this.word && !this.disableWord && store.state.config.wordShell) {
-			if (Math.random() < 0.1) {
-				if (Math.random() < 0.5) {
-					const wordText = `新年快乐\n${TG_USER_NAME}`;
-					createWordBurst(wordText, wordStarFactory, x, y);
-				}
+
+		if (!this.disableWord && store.state.config.wordShell) {
+			if (Math.random() < 0.3) {  // 提高概率到30%
+				const wordToDisplay = Math.random() < 0.5 ? randomWord() : userName;  // 50%新年词，50%用户名字
+				createWordBurst(wordToDisplay, dotStarFactory, x, y);
 			}
 		}
-		*/
 
 		if (this.pistil) {
 			const innerShell = new Shell({
@@ -2405,12 +2379,6 @@ const soundManager = {
 	},
 };
 
-// imageTemplateManager.preload().then(() => {
-//     if(imageTemplateManager.sources.length>0){
-//         var img = imageTemplateManager.sources[0];
-//     }
-// });
-
 // Kick things off.
 
 function setLoadingStatus(status) {
@@ -2435,4 +2403,3 @@ if (IS_HEADER) {
 		});
 	}, 0);
 }
-
