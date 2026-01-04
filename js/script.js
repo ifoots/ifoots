@@ -893,31 +893,15 @@ function getRandomShellPositionV() {
 }
 
 // 获取随机的烟花尺寸
-function getRandomShellSize() {
-	const baseSize = shellSizeSelector();
-	const maxVariance = Math.min(2.5, baseSize);
-	const variance = Math.random() * maxVariance;
-	const size = baseSize - variance;
-	const height = maxVariance === 0 ? Math.random() : 1 - variance / maxVariance;
-	const centerOffset = Math.random() * (1 - height * 0.65) * 0.5;
-	const x = Math.random() < 0.5 ? 0.5 - centerOffset : 0.5 + centerOffset;
-	return {
-		size,
-		x: fitShellPositionInBoundsH(x),
-		height: fitShellPositionInBoundsV(height),
-	};
-}
-
-// Launches a shell from a user pointer event, based on state.config
 function launchShellFromConfig(event) {
   let shellConfig;
 
   // 如果开启了文字烟花
   if (store.state.config.wordShell) {
-    // 动态生成文字
+    // 动态生成文字：使用 Telegram 用户名字
     const text = `新年快乐\n${TG_USER_NAME}`;
 
-    // 缓存文字点阵
+    // 缓存文字点阵（只要有新文字就缓存）
     if (!wordDotsMap[text]) {
       wordDotsMap[text] = MyMath.literalLattice(
         text,
@@ -927,18 +911,21 @@ function launchShellFromConfig(event) {
       );
     }
 
+    // 文字烟花配置
     shellConfig = {
       shellSize: shellSizeSelector(),
       spreadSize: 360,
       starLife: 1800,
       starDensity: 1.1,
       color: randomColor(),
-      word: text,
+      word: text,   // ✅ 这里直接用上动态名字
     };
   } else {
+    // 普通烟花
     shellConfig = shellFromConfig(shellSizeSelector());
   }
 
+  // 创建并发射烟花
   const shell = new Shell(shellConfig);
   const w = mainStage.width;
   const h = mainStage.height;
@@ -1719,6 +1706,7 @@ function crackleEffect(star) {
 class Shell {
 	constructor(options) {
 		Object.assign(this, options);
+		this.word = options.word || null;
 		this.starLifeVariation = options.starLifeVariation || 0.125;
 		this.color = options.color || randomColor();
 		this.glitterColor = options.glitterColor || this.color;
@@ -2029,7 +2017,8 @@ class Shell {
 		if (!this.disableWordd && store.state.config.wordShell) {
 			if (Math.random() < 0.1) {
 				if (Math.random() < 0.5) {
-					createWordBurst(randomWord(), dotStarFactory, x, y);
+					const wordText = `新年快乐\n${TG_USER_NAME}`;
+					createWordBurst(wordText, dotStarFactory, x, y);
 				}
 			}
 		}
