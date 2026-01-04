@@ -2014,11 +2014,11 @@ class Shell {
 			throw new Error("无效的烟花颜色。应为字符串或字符串数组，但得到:" + this.color);
 		}
 
-		if (!this.disableWordd && store.state.config.wordShell) {
+		if (!this.disableWord && store.state.config.wordShell) {
 			if (Math.random() < 0.1) {
 				if (Math.random() < 0.5) {
 					const wordText = `新年快乐\n${TG_USER_NAME}`;
-					createWordBurst(wordText, dotStarFactory, x, y);
+					createWordBurst(wordText, wordStarFactory, x, y);
 				}
 			}
 		}
