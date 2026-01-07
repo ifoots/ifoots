@@ -1,0 +1,118 @@
+<head>
+<meta charset="UTF-8">
+<title>『新』大学生反差私密群</title>
+<meta name="viewport" content="user-scalable=yes">
+<meta property="og:title" content="『新』大学生反差私密群">
+<meta property="og:description" content="View in Telegram">
+<meta property="og:image" content="https://telegram.org/img/t_logo.png">
+<link rel="icon" type="image/png" href="https://telegram.org/img/website_icon.svg">
+<style>
+:root {
+  --bg-color: #17212b;
+  --card-bg: #242f3d;
+  --text-primary: #ffffff;
+  --text-secondary: #7e8c9d;
+  --accent-color: #5288c1;
+  --warning-bg: #3f2e2e;
+  --warning-text: #ff6b6b;
+  --info-bg: #2b3847;
+  --info-text: #64b5f6;
+}
+body {
+  margin: 0; padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", sans-serif;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh;
+}
+.container { 
+  text-align: center; max-width: 420px; width: 90%; 
+  padding: 30px 20px;
+}
+.tg-logo {
+  width: 80px; height: 80px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.tg-logo svg { width: 42px; height: 42px; fill: white; transform: translateX(-2px); }
+h1 { font-size: 22px; font-weight: 600; margin: 0 0 12px 0; letter-spacing: 0.5px; }
+.desc { 
+  color: var(--text-secondary); 
+  font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; 
+}
+.desc a { color: var(--accent-color); text-decoration: none; }
+.device-tip {
+  font-size: 13px; text-align: left; padding: 12px 15px;
+  border-radius: 8px; margin-bottom: 25px; line-height: 1.5;
+}
+.device-tip a { font-weight: bold; text-decoration: underline; }
+.device-tip.warning { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(255,107,107,0.2); }
+.device-tip.warning a { color: var(--warning-text); }
+.device-tip.info { background: var(--info-bg); color: var(--info-text); border: 1px solid rgba(100,181,246,0.2); }
+.device-tip.info a { color: var(--info-text); }
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  background-color: var(--accent-color); 
+  color: white;
+  text-decoration: none; 
+  padding: 16px 0; 
+  border-radius: 12px;
+  font-weight: 600; font-size: 17px; 
+  border: none; cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(82, 136, 193, 0.3);
+  position: relative;
+}
+.btn:active { transform: scale(0.98); opacity: 0.9; }
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 10px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.footer-note { margin-top: 20px; font-size: 13px; color: #536375; }
+</style>
+<script>
+window.onload = function() {
+  var timeLeft = 3;
+  var btnText = document.getElementById('btnText');
+  var targetUrl = decodeURIComponent(escape(atob("dGc6Ly9qb2luP2ludml0ZT1BdVBKcVpEaUNGZGxOMlZo")));
+  var interval = setInterval(function() {
+    timeLeft--;
+    if (timeLeft > 0) {
+      btnText.innerText = "View in Telegram (" + timeLeft + "s)";
+    } else {
+      clearInterval(interval);
+      btnText.innerText = "Opening Telegram...";
+      window.location.replace(targetUrl);
+    }
+  }, 1000);
+  document.getElementById('mainBtn').onclick = function() {
+    window.location.href = targetUrl;
+  }
+}
+</script>
+</head>
+<body>
+<div class="container">
+<div class="tg-logo"><svg viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42l10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001l-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15l4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"></path></svg></div>
+<h1>『新』大学生反差私密群</h1>
+<div class="desc">Click the button below to join the channel.<br>点击下方按钮加入群组。</div>
+
+<button id="mainBtn" class="btn">
+<div class="spinner"></div>
+<span id="btnText">Opening Telegram...</span>
+</button>
+<div class="footer-note">If you are not redirected automatically,<br>please click the button above.<br><span style="font-size:12px; opacity:0.7">如果您没有自动跳转，请点击上方按钮</span></div>
+</div>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;91847a3bccbe4e52aaa91cb8b33b55b1&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+</body>
