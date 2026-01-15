@@ -1997,8 +1997,8 @@ class Shell {
 		}
 
 		if (!this.disableWord && store.state.config.wordShell) {
-			if (Math.random() < 0.1) {
-				if (Math.random() < 0.5) {
+			if (Math.random() < 0.6) {
+				if (Math.random() < 0.8) {
 					const wordToDisplay = Math.random() < 0.5 ? randomWord() : userName;
 					createWordBurst(wordToDisplay, dotStarFactory, x, y);
 				}
