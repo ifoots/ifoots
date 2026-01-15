@@ -13,7 +13,7 @@ console.clear();
 // 检测是否在Telegram Mini App中
 const isTelegramMiniApp = !!window.Telegram && !!window.Telegram.WebApp;
 
-// 获取用户名字（如果在Telegram中）
+// 获取当前用户名字（如果在Telegram中）
 let userName = 'Guest'; // 默认值
 if (isTelegramMiniApp) {
   window.Telegram.WebApp.ready(); // 初始化Telegram Web App
@@ -24,6 +24,12 @@ if (isTelegramMiniApp) {
   }
 }
 
+// 手动填写群组管理员名字（排除机器人，只填真人管理员的真实名字或用户名）
+// 示例：["张三", "李四", "王五"]
+// 请你自己替换成 -1002042004332 群组的真实管理员名字（去群组设置里查看管理员列表，手动复制进来）
+// 如果不填写，这里就是空数组，不会影响原有功能
+const adminNames = []; // ←←←← 在这里填写管理员名字，例如 ["管理员A", "管理员B"]
+
 const IS_MOBILE = window.innerWidth <= 640;
 const IS_DESKTOP = window.innerWidth > 800;
 const IS_HEADER = IS_DESKTOP && window.innerHeight < 300;
@@ -33,8 +39,6 @@ const IS_HIGH_END_DEVICE = (() => {
 	if (!hwConcurrency) {
 		return false;
 	}
-	//大屏幕显示的是全尺寸的计算机，现在的计算机通常都有超线程技术。
-	//所以一台四核台式机有8个核心。我们将在那里设置一个更高的最小阈值。
 	const minCount = window.innerWidth <= 1024 ? 4 : 8;
 	return hwConcurrency >= minCount;
 })();
@@ -89,7 +93,7 @@ const trailsStage = new Stage("trails-canvas");
 const mainStage = new Stage("main-canvas");
 const stages = [trailsStage, mainStage];
 
-//随机文字烟花内容
+//随机文字烟花内容（原有的新年祝福等）
 const randomWords = ["大学生反差私密群", "新年快乐", "万事如意", "心想事成", "恭喜发财", "新春快乐", "不喝美式v", "陈江海", "Andee", "穆苜大小姐", "糕糕", "阿瀚", "汤姆猫", "花花"];
 const wordDotsMap = {};
 randomWords.forEach((word) => {
@@ -582,7 +586,7 @@ function randomColor(options) {
 	return color;
 }
 
-// 随机获取一段文字
+// 随机获取一段文字（保留原函数，用于兼容）
 function randomWord() {
 	if (randomWords.length === 0) return "";
 	if (randomWords.length === 1) return randomWords[0];
@@ -1519,20 +1523,10 @@ function createParticleArc(start, arcLength, count, randomness, particleFactory)
 function getWordDots(word) {
 	if (!word) return null;
 
-	// 最大允许宽度，例如屏幕宽度的80%（留边距）
-	const maxWidth = stageW * 0.8;
+	//随机字体大小 60~130
+	var fontSize = Math.floor(Math.random() * 70 + 60);
 
-	// 起始字体大小
-	let fontSize = Math.floor(Math.random() * 70 + 60); // 初始60~130
-
-	// 生成点阵并检查宽度
-	let res = MyMath.literalLattice(word, 3, "Gabriola,华文琥珀", fontSize + "px");
-
-	// 如果宽度超过最大值，逐步减小字体大小
-	while (res.width > maxWidth && fontSize > 30) { // 最小字体30px，避免太小
-		fontSize -= 5; // 每次减5px
-		res = MyMath.literalLattice(word, 3, "Gabriola,华文琥珀", fontSize + "px");
-	}
+	var res = MyMath.literalLattice(word, 3, "Gabriola,华文琥珀", fontSize + "px");
 
 	return res;
 }
@@ -1996,12 +1990,13 @@ class Shell {
 			throw new Error("无效的烟花颜色。应为字符串或字符串数组，但得到:" + this.color);
 		}
 
+		// 新增文字烟花逻辑：整合原随机词 + 当前用户名字 + 管理员名字（自动去重，优先保留 userName 和 adminNames）
 		if (!this.disableWord && store.state.config.wordShell) {
-			if (Math.random() < 0.6) {
-				if (Math.random() < 0.8) {
-					const wordToDisplay = Math.random() < 0.5 ? randomWord() : userName;
-					createWordBurst(wordToDisplay, dotStarFactory, x, y);
-				}
+			if (Math.random() < 0.3) {  // 30% 概率出现文字烟花（可自行调整）
+				// 合并所有可能文字，并去重（优先保留 userName 和 adminNames，因为先加它们）
+				const allPossibleWords = [...new Set([userName, ...adminNames, ...randomWords])];
+				const wordToDisplay = allPossibleWords[Math.floor(Math.random() * allPossibleWords.length)];
+				createWordBurst(wordToDisplay, dotStarFactory, x, y);
 			}
 		}
 
